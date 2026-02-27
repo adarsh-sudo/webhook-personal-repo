@@ -172,7 +172,7 @@ function buildText(event) {
     if (event.action === "pull_request")
         return `<strong>"${event.author}"</strong> submitted a pull request from <strong>"${event.from_branch}"</strong> to <strong>"${event.to_branch}"</strong> on ${d}`;
     if (event.action === "merge")
-        return `<strong>${event.author}</strong> merged branch <strong>${event.from_branch}</strong> to <strong>${event.to_branch}</strong> on ${d}`;
+        return `<strong>"${event.author}"</strong> merged branch <strong>"${event.from_branch}"</strong> to <strong>"${event.to_branch}"</strong> on ${d}`;
     return JSON.stringify(event);
 }
 
