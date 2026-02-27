@@ -14,8 +14,7 @@ def health_check():
         "status": "Flask is running"
     }), 200
 
-from datetime import datetime, timezone
-
+# GitHub webhook endpoint to receive push and pull request events
 @app.route("/webhook", methods=["POST"])
 def github_webhook():
 
@@ -39,7 +38,7 @@ def github_webhook():
 
         pr = data["pull_request"]
 
-        # MERGE EVENT
+        # Merge event is a special case of pull request event where the action is "closed" and the PR is merged : true
         if data["action"] == "closed" and pr.get("merged"):
             document = {
                 "request_id": pr["id"],
@@ -50,7 +49,7 @@ def github_webhook():
                 "timestamp": datetime.now(timezone.utc).isoformat()
             }
 
-        # NORMAL PR EVENT
+        # Normal pull request events (opened, closed without merge, etc.)
         else:
             document = {
                 "request_id": pr["id"],
@@ -68,15 +67,16 @@ def github_webhook():
 
     return jsonify({"message": "Webhook received"}), 200
 
+# Endpoint to retrieve the last 100 events from the database,
+# sorted by timestamp in descending order
 @app.route("/events", methods=["GET"])
 def get_events():
     events = list(collection.find({}, {"_id": 0}).sort("timestamp", -1).limit(100))
     return jsonify(events)
 
+# Simple home page for displaying the events in a interactive UI(index.html)
 @app.route("/")
 def home():
     return render_template("index.html")
-
-#########################################################################
 
 if __name__ == "__main__":    app.run(debug=True, port=5000)
