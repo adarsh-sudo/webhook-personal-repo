@@ -15,7 +15,7 @@ def health_check():
     }), 200
 
 # GitHub webhook endpoint to receive push and pull request events
-@app.route("/webhook", methods=["POST"])
+@app.route("/receiver", methods=["POST"])
 def github_webhook():
 
     if request.headers.get("Content-Type") != "application/json":
